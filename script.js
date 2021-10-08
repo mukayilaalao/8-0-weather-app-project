@@ -1,17 +1,14 @@
 let cityArr = [];
 let form = document.querySelector('#weather-search');
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    let city = e.target.city.value;
-    e.target.city.value = '';
-    
-    fetch(`https://wttr.in/${city}?format=j1`)
+function fetchWeatherByCity(cityName) {
+
+    fetch(`https://wttr.in/${cityName}?format=j1`)
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
+            
             let p = document.querySelector('#city-info');
             p.innerHTML = 
-            `<h2>${city}</h2>
+            `<h2>${cityName}</h2>
             <div><strong>Area:</strong> ${data.nearest_area[0].areaName[0].value}</div>
             <div><strong>Region:</strong> ${data.nearest_area[0].region[0].value}</div>
             <div><strong>Country:</strong> ${data.nearest_area[0].country[0].value}</div>
@@ -44,30 +41,27 @@ form.addEventListener('submit', (e) => {
             let anchor = document.createElement('a');
             let span = document.createElement('span');
             span.innerHTML = ` - ${data.current_condition[0].FeelsLikeF} &deg;F`
-            anchor.setAttribute('href', '#');
-            anchor.textContent = `${city}`
-
+            anchor.setAttribute('href', `#`);
+            anchor.textContent = `${cityName}`;
+            anchor.addEventListener("click", (e)=> {
+                fetchWeatherByCity(e.target.textContent);
+            })
             let noSearches = document.querySelector('#no-searches');
 
             
-            if (!cityArr.includes(city)) {
-                cityArr.unshift(city);
+            if (!cityArr.includes(cityName)) {
+                cityArr.unshift(cityName);
                 li.append(anchor, span);
                 ul.append(li);
                 if (cityArr.length === 1) noSearches.remove(); 
             }
-
-            // if (cityArr) noSearches.style.display = 'none';
-
             
-
         })
-})
+}
 
-let anchorList = document.querySelectorAll('a');
-anchorList.forEach(el => {
-    el.addEventListener('click', (e) => {
-        history.go(-cityArr.indexOf(e.target));
-        
-    })
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let city = e.target.city.value;
+    e.target.city.value = '';
+    fetchWeatherByCity(city);
 })
