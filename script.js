@@ -1,7 +1,7 @@
 let cityArr = [];
 let form = document.querySelector('#weather-search');
 function fetchWeatherByCity(cityName) {
-
+    // User input validation
     fetch(`https://wttr.in/${cityName}?format=j1`)
         .then((res) => res.json())
         .then((data) => {
@@ -35,7 +35,7 @@ function fetchWeatherByCity(cityName) {
                 <div><strong>Min Temperature: </strong>${data.weather[2].mintempF}&deg;F</div>
             </div>`
 
-            // let history = document.querySelector('#history-content');
+            // adding links to the sidebar (class of history)
             let ul = document.querySelector('#previous-city');
             let li = document.createElement('li');
             let anchor = document.createElement('a');
@@ -44,11 +44,12 @@ function fetchWeatherByCity(cityName) {
             anchor.setAttribute('href', `#`);
             anchor.textContent = `${cityName}`;
             anchor.addEventListener("click", (e)=> {
+                // On click reconstruct the page
                 fetchWeatherByCity(e.target.textContent);
             })
             let noSearches = document.querySelector('#no-searches');
 
-            
+            // Avoiding duplicated history links
             if (!cityArr.includes(cityName)) {
                 cityArr.unshift(cityName);
                 li.append(anchor, span);
@@ -57,11 +58,34 @@ function fetchWeatherByCity(cityName) {
             }
             
         })
+
 }
 
+// On submit construct the page
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     let city = e.target.city.value;
+    let checkCityName=city;
+    checkCityName=checkCityName.split(" ").join("");
+    let regArr=checkCityName.match(/[^a-z]/gi)||[];
+    if(city.trim()==="" || regArr.length){
+        let inp=document.querySelector("#weather-search-city");
+        let div=document.createElement("div");
+        div.textContent="Please enter a valid city!";
+        div.setAttribute("id", "error");
+        form.before(div);
+
+        inp.addEventListener("focus", ()=>{
+            div.style.display="none";
+        })
+        
+    }
+    else {
+        let citySplit=city.split(" ");
+        let splitReturn = citySplit.map(el=>el[0].toUpperCase()+el.slice(1))
+                                                                                    
+        city=splitReturn.join(" ");
+        fetchWeatherByCity(city);
+    }
     e.target.city.value = '';
-    fetchWeatherByCity(city);
 })
