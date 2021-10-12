@@ -12,7 +12,20 @@ function fetchWeatherByCity(cityName) {
             <div><strong>Area:</strong> ${data.nearest_area[0].areaName[0].value}</div>
             <div><strong>Region:</strong> ${data.nearest_area[0].region[0].value}</div>
             <div><strong>Country:</strong> ${data.nearest_area[0].country[0].value}</div>
-            <div><strong>Currently:</strong> Feels Like ${data.current_condition[0].FeelsLikeF} &deg;F</div>`
+            <div><strong>Currently:</strong> Feels Like ${data.current_condition[0].FeelsLikeF} &deg;F</div>
+            <div><strong>${data.current_condition[0].weatherDesc[0].value}</strong></div>`;
+            let weatherDiv = document.querySelector('#weather-condition div');
+
+            let conditionValue = data.current_condition[0].weatherDesc[0].value;
+            if (conditionValue === 'Sunny' || conditionValue === 'Clear') {
+                weatherDiv.id = "sunny";
+            } else if (conditionValue === 'Overcast' || conditionValue === 'Partly cloudy' || conditionValue === 'Cloudy') {
+                weatherDiv.id = 'cloudy';
+            } else if (conditionValue === 'Shower in vicinity' || conditionValue.includes('rain') || conditionValue === 'Patchy rain possible') {
+                weatherDiv.id = 'rain';
+            } else if (conditionValue.includes('snow')) {
+                weatherDiv.id = 'snow';
+            }
 
             let threeDay = document.querySelector('#three-days');
             threeDay.innerHTML = 
