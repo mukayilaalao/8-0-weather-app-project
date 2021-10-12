@@ -15,14 +15,16 @@ function fetchWeatherByCity(cityName) {
                 <div><strong>Currently:</strong> Feels Like ${data.current_condition[0].FeelsLikeF} &deg;F</div>
                 <div><strong>${data.current_condition[0].weatherDesc[0].value}</strong></div>`;
                 let weatherDiv = document.querySelector('#weather-condition div');
-
+                let secondWeatherDiv = document.querySelector('#second-div');
                 let conditionValue = data.current_condition[0].weatherDesc[0].value;
+
                 if (conditionValue === 'Sunny' || conditionValue === 'Clear') {
                     weatherDiv.id = "sunny";
                 } else if (conditionValue === 'Overcast' || conditionValue === 'Partly cloudy' || conditionValue === 'Cloudy') {
                     weatherDiv.id = 'cloudy';
-                } else if (conditionValue === 'Shower in vicinity' || conditionValue.includes('rain') || conditionValue === 'Patchy rain possible') {
+                } else if (conditionValue === 'Shower in vicinity' || conditionValue.toLowerCase().includes('rain') || conditionValue.toLowerCase().includes('mist')) {
                     weatherDiv.id = 'rain';
+                    secondWeatherDiv.setAttribute('class', "dark-clouds");
                 } else if (conditionValue.includes('snow')) {
                     weatherDiv.id = 'snow';
                 }
